@@ -91,10 +91,10 @@ const SERVERS: Server[] = [
   {
     id: "arc-eu",
     name: "Embark EU",
-    host: "dynamodb.eu-north-1.amazonaws.com", // Embark likely uses AWS Stockholm
+    host: "dynamodb.eu-central-1.amazonaws.com", // ARC has servers in Amsterdam/Brussels, closest to Frankfurt
     port: 443,
     games: "ARC Raiders",
-    region: "Stockholm (EU North)",
+    region: "Amsterdam (EU)",
   },
 ];
 
