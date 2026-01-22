@@ -1,9 +1,11 @@
 import { serve } from "bun";
+import { Socket } from "net";
 
 interface Server {
   id: string;
   name: string;
-  endpoint: string; // AWS DynamoDB endpoint for region proxy
+  host: string;
+  port: number;
   games: string;
   region: string;
 }
@@ -19,41 +21,46 @@ interface CachedResults {
   internetSpeed: string;
 }
 
-// AWS DynamoDB endpoints as proxy for game server regions
-// Game servers are typically hosted in these same AWS/cloud regions
+// Server endpoints for TCP ping measurement
+// Using hosts that accept TCP connections for accurate RTT measurement
 const SERVERS: Server[] = [
   {
     id: "riot-tr",
     name: "Riot Games TR",
-    endpoint: "https://dynamodb.eu-central-1.amazonaws.com",
+    host: "radore.com", // Turkish datacenter - close to Riot TR servers
+    port: 443,
     games: "Valorant, LoL",
-    region: "Frankfurt (EU)",
+    region: "İstanbul (TR)",
   },
   {
     id: "faceit-eu",
     name: "Faceit EU",
-    endpoint: "https://dynamodb.eu-central-1.amazonaws.com",
+    host: "dynamodb.eu-central-1.amazonaws.com",
+    port: 443,
     games: "CS2 Turnuva",
     region: "Frankfurt (EU)",
   },
   {
     id: "steam-eu",
     name: "Steam EU",
-    endpoint: "https://dynamodb.eu-central-1.amazonaws.com",
+    host: "dynamodb.eu-central-1.amazonaws.com",
+    port: 443,
     games: "CS2, Dota 2",
     region: "Frankfurt (EU)",
   },
   {
     id: "pubg-eu",
     name: "PUBG EU",
-    endpoint: "https://dynamodb.eu-west-1.amazonaws.com",
+    host: "dynamodb.eu-west-1.amazonaws.com",
+    port: 443,
     games: "PUBG",
     region: "Dublin (EU West)",
   },
   {
     id: "fortnite-eu",
     name: "Epic Games EU",
-    endpoint: "https://dynamodb.eu-west-3.amazonaws.com",
+    host: "dynamodb.eu-west-3.amazonaws.com",
+    port: 443,
     games: "Fortnite",
     region: "Paris (EU West)",
   },
@@ -65,30 +72,47 @@ let cachedResults: CachedResults = {
   internetSpeed: "2 Gbit/s",
 };
 
-// Measure ping using HTTP fetch timing (same technique as gameserverping.com)
+// Measure TCP connect time (most accurate for estimating game ping)
+function tcpPing(host: string, port: number, timeout: number = 3000): Promise<number | null> {
+  return new Promise((resolve) => {
+    const start = performance.now();
+    const socket = new Socket();
+
+    const cleanup = () => {
+      socket.removeAllListeners();
+      socket.destroy();
+    };
+
+    socket.setTimeout(timeout);
+
+    socket.on("connect", () => {
+      const latency = Math.round(performance.now() - start);
+      cleanup();
+      resolve(latency);
+    });
+
+    socket.on("timeout", () => {
+      cleanup();
+      resolve(null);
+    });
+
+    socket.on("error", () => {
+      cleanup();
+      resolve(null);
+    });
+
+    socket.connect(port, host);
+  });
+}
+
 async function measurePing(server: Server): Promise<ServerResult> {
   const attempts = 3;
   const pings: number[] = [];
 
   for (let i = 0; i < attempts; i++) {
-    const start = performance.now();
-    try {
-      // Use GET with abort signal for timeout
-      const controller = new AbortController();
-      const timeoutId = setTimeout(() => controller.abort(), 5000);
-
-      const response = await fetch(server.endpoint, {
-        method: "GET",
-        signal: controller.signal,
-      });
-
-      clearTimeout(timeoutId);
-      const latency = Math.round(performance.now() - start);
-
-      // AWS returns various status codes (403, 404, etc.) - any response means server is reachable
+    const latency = await tcpPing(server.host, server.port);
+    if (latency !== null) {
       pings.push(latency);
-    } catch {
-      // Timeout or network error - skip this attempt
     }
   }
 
