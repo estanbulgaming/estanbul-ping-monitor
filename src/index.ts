@@ -75,7 +75,7 @@ const SERVERS: Server[] = [
   {
     id: "blizzard-eu",
     name: "Blizzard EU",
-    host: "eu.battle.net", // Blizzard EU login server
+    host: "dynamodb.eu-west-3.amazonaws.com", // AWS Paris - Blizzard EU servers are in Paris
     port: 443,
     games: "WoW, Overwatch 2",
     region: "Paris (EU)",
