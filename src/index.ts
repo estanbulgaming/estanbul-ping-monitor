@@ -35,7 +35,7 @@ const SERVERS: Server[] = [
   {
     id: "faceit-eu",
     name: "Faceit EU",
-    host: "88.198.52.17", // Actual Faceit server (Hetzner Germany)
+    host: "dynamodb.eu-central-1.amazonaws.com", // AWS Frankfurt - Faceit uses Hetzner but TCP 443 blocked
     port: 443,
     games: "CS2 Turnuva",
     region: "Frankfurt (EU)",
@@ -43,7 +43,7 @@ const SERVERS: Server[] = [
   {
     id: "steam-eu",
     name: "Steam EU",
-    host: "155.133.226.68", // Actual Valve server (Frankfurt)
+    host: "dynamodb.eu-central-1.amazonaws.com", // AWS Frankfurt - Valve servers block TCP 443
     port: 443,
     games: "CS2, Dota 2",
     region: "Frankfurt (EU)",
@@ -83,7 +83,7 @@ const SERVERS: Server[] = [
   {
     id: "ea-eu",
     name: "EA EU",
-    host: "159.153.228.189", // Actual EA/FIFA server
+    host: "dynamodb.eu-central-1.amazonaws.com", // AWS Frankfurt - EA servers block TCP 443
     port: 443,
     games: "Battlefield, FC 25",
     region: "Frankfurt (EU)",
