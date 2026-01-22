@@ -22,7 +22,7 @@ interface CachedResults {
 }
 
 // Server endpoints for TCP ping measurement
-// Using hosts that accept TCP connections for accurate RTT measurement
+// Using actual game server IPs where available for accurate RTT measurement
 const SERVERS: Server[] = [
   {
     id: "riot-tr",
@@ -35,7 +35,7 @@ const SERVERS: Server[] = [
   {
     id: "faceit-eu",
     name: "Faceit EU",
-    host: "dynamodb.eu-central-1.amazonaws.com",
+    host: "88.198.52.17", // Actual Faceit server (Hetzner Germany)
     port: 443,
     games: "CS2 Turnuva",
     region: "Frankfurt (EU)",
@@ -43,7 +43,7 @@ const SERVERS: Server[] = [
   {
     id: "steam-eu",
     name: "Steam EU",
-    host: "dynamodb.eu-central-1.amazonaws.com",
+    host: "155.133.226.68", // Actual Valve server (Frankfurt)
     port: 443,
     games: "CS2, Dota 2",
     region: "Frankfurt (EU)",
@@ -51,7 +51,7 @@ const SERVERS: Server[] = [
   {
     id: "pubg-eu",
     name: "PUBG EU",
-    host: "dynamodb.eu-west-1.amazonaws.com",
+    host: "dynamodb.eu-west-1.amazonaws.com", // PUBG uses AWS Dublin
     port: 443,
     games: "PUBG",
     region: "Dublin (EU West)",
@@ -59,7 +59,7 @@ const SERVERS: Server[] = [
   {
     id: "fortnite-eu",
     name: "Epic Games EU",
-    host: "dynamodb.eu-west-3.amazonaws.com",
+    host: "dynamodb.eu-west-3.amazonaws.com", // Epic uses AWS Paris
     port: 443,
     games: "Fortnite",
     region: "Paris (EU West)",
@@ -67,7 +67,7 @@ const SERVERS: Server[] = [
   {
     id: "cod-eu",
     name: "Call of Duty EU",
-    host: "dynamodb.eu-west-2.amazonaws.com",
+    host: "dynamodb.eu-west-2.amazonaws.com", // Activision uses cloud (London)
     port: 443,
     games: "Warzone, MW3",
     region: "London (EU)",
@@ -75,15 +75,15 @@ const SERVERS: Server[] = [
   {
     id: "blizzard-eu",
     name: "Blizzard EU",
-    host: "dynamodb.eu-west-3.amazonaws.com",
+    host: "eu.battle.net", // Blizzard EU login server
     port: 443,
     games: "WoW, Overwatch 2",
-    region: "Paris (EU West)",
+    region: "Paris (EU)",
   },
   {
     id: "ea-eu",
     name: "EA EU",
-    host: "dynamodb.eu-central-1.amazonaws.com",
+    host: "159.153.228.189", // Actual EA/FIFA server
     port: 443,
     games: "Battlefield, FC 25",
     region: "Frankfurt (EU)",
@@ -91,7 +91,7 @@ const SERVERS: Server[] = [
   {
     id: "arc-eu",
     name: "Embark EU",
-    host: "dynamodb.eu-north-1.amazonaws.com",
+    host: "dynamodb.eu-north-1.amazonaws.com", // Embark likely uses AWS Stockholm
     port: 443,
     games: "ARC Raiders",
     region: "Stockholm (EU North)",
