@@ -86,7 +86,8 @@ function tcpPing(host: string, port: number, timeout: number = 3000): Promise<nu
     socket.setTimeout(timeout);
 
     socket.on("connect", () => {
-      const latency = Math.round(performance.now() - start);
+      // Round to 1 decimal place for precision (e.g., 0.6ms, 3.2ms)
+      const latency = Math.round((performance.now() - start) * 10) / 10;
       cleanup();
       resolve(latency);
     });
