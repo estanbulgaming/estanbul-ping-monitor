@@ -64,6 +64,38 @@ const SERVERS: Server[] = [
     games: "Fortnite",
     region: "Paris (EU West)",
   },
+  {
+    id: "cod-eu",
+    name: "Call of Duty EU",
+    host: "dynamodb.eu-west-2.amazonaws.com",
+    port: 443,
+    games: "Warzone, MW3",
+    region: "London (EU)",
+  },
+  {
+    id: "blizzard-eu",
+    name: "Blizzard EU",
+    host: "dynamodb.eu-west-3.amazonaws.com",
+    port: 443,
+    games: "WoW, Overwatch 2",
+    region: "Paris (EU West)",
+  },
+  {
+    id: "ea-eu",
+    name: "EA EU",
+    host: "dynamodb.eu-central-1.amazonaws.com",
+    port: 443,
+    games: "Battlefield, FC 25",
+    region: "Frankfurt (EU)",
+  },
+  {
+    id: "arc-eu",
+    name: "Embark EU",
+    host: "dynamodb.eu-north-1.amazonaws.com",
+    port: 443,
+    games: "ARC Raiders",
+    region: "Stockholm (EU North)",
+  },
 ];
 
 let cachedResults: CachedResults = {
