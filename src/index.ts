@@ -1,25 +1,11 @@
 import { serve } from "bun";
 import { Socket } from "net";
-
-interface Server {
-  id: string;
-  name: string;
-  host: string;
-  port: number;
-  games: string;
-  region: string;
-}
-
-interface ServerResult extends Server {
-  ping: number | null;
-  status: "online" | "offline" | "error";
-}
-
-interface CachedResults {
-  servers: ServerResult[];
-  lastUpdate: string | null;
-  internetSpeed: string;
-}
+import {
+  toPublicPayload,
+  type CachedResults,
+  type Server,
+  type ServerResult,
+} from "./payload";
 
 // Server endpoints for TCP ping measurement
 // Using actual game server IPs where available for accurate RTT measurement
@@ -27,7 +13,11 @@ const SERVERS: Server[] = [
   {
     id: "riot-tr",
     name: "Riot Games TR",
-    host: "radore.com", // Turkish datacenter - close to Riot TR servers
+    // TurkNet İstanbul (RIPE: TR-TURKNET). Alan adı değil IP: önceki hedef radore.com
+    // Cloudflare'e geçince ölçüm sessizce Frankfurt'a kaydı ve kart 1ms yerine 38ms gösterdi.
+    // IP sabitlemek CDN araya girmesini yapısal olarak engeller; hedef ölürse kart "-" gösterir,
+    // yani yanlış sayı yayınlamak yerine görünür şekilde başarısız olur.
+    host: "95.70.148.80",
     port: 443,
     games: "Valorant, LoL",
     region: "İstanbul (TR)",
@@ -201,7 +191,7 @@ serve({
     }
 
     if (url.pathname === "/api/ping") {
-      return new Response(JSON.stringify(cachedResults), {
+      return new Response(JSON.stringify(toPublicPayload(cachedResults)), {
         headers: {
           "Content-Type": "application/json",
           ...corsHeaders,

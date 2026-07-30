@@ -4,7 +4,9 @@
   "type": "module",
   "scripts": {
     "start": "bun run src/index.ts",
-    "dev": "bun --watch run src/index.ts"
+    "dev": "bun --watch run src/index.ts",
+    "test": "bun test src",
+    "type-check": "bunx tsc --noEmit"
   },
   "devDependencies": {
     "@types/bun": "latest"
