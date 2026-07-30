@@ -27,7 +27,8 @@ export interface PublicPayload {
 }
 
 // Ölçüm hedefleri bölge vekilidir, oyun firmasının kendi sunucusu değil.
-// Yanıtta görünürlerse kartlardaki isimler denetlemeye açık hâle geliyor.
+// Bu depo public olduğu için hedefler sır değil; amaç canlı sitenin yanıtının
+// vekil kullanımını ziyaretçiye doğrudan duyurmaması.
 export function toPublicPayload(results: CachedResults): PublicPayload {
   return {
     servers: results.servers.map(({ host: _host, port: _port, ...gorunen }) => gorunen),
