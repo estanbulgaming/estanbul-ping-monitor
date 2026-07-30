@@ -1,11 +1,7 @@
 import { serve } from "bun";
 import { Socket } from "net";
-import {
-  toPublicPayload,
-  type CachedResults,
-  type Server,
-  type ServerResult,
-} from "./payload";
+import { handleRequest } from "./router";
+import type { CachedResults, Server, ServerResult } from "./payload";
 
 // Server endpoints for TCP ping measurement
 // Using actual game server IPs where available for accurate RTT measurement
@@ -175,40 +171,7 @@ updatePings(); // Run once on startup
 
 serve({
   port: Number(process.env.PORT) || 3001,
-  fetch(req) {
-    const url = new URL(req.url);
-
-    // CORS headers for all responses
-    const corsHeaders = {
-      "Access-Control-Allow-Origin": "*",
-      "Access-Control-Allow-Methods": "GET, OPTIONS",
-      "Access-Control-Allow-Headers": "Content-Type",
-    };
-
-    // Handle preflight
-    if (req.method === "OPTIONS") {
-      return new Response(null, { headers: corsHeaders });
-    }
-
-    if (url.pathname === "/api/ping") {
-      return new Response(JSON.stringify(toPublicPayload(cachedResults)), {
-        headers: {
-          "Content-Type": "application/json",
-          ...corsHeaders,
-        },
-      });
-    }
-
-    // "/" de sağlık yanıtı veriyor: Coolify'ın sağlık kontrolü varsayılan olarak "/"
-    // istiyor ve 404 alınca konteyner unhealthy sayılıp deploy geri alınıyor. Yol
-    // Coolify'da ayarlanabilir ama repo dışında kalır; burada karşılamak dağıtımı
-    // görünmeyen bir ayara bağımlı olmaktan çıkarıyor.
-    if (url.pathname === "/health" || url.pathname === "/") {
-      return new Response("OK", { headers: corsHeaders });
-    }
-
-    return new Response("Not Found", { status: 404, headers: corsHeaders });
-  },
+  fetch: (req) => handleRequest(req, cachedResults),
 });
 
 console.log(`Ping monitor running on port ${process.env.PORT || 3001}`);
