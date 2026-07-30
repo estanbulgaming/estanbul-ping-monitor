@@ -199,7 +199,11 @@ serve({
       });
     }
 
-    if (url.pathname === "/health") {
+    // "/" de sağlık yanıtı veriyor: Coolify'ın sağlık kontrolü varsayılan olarak "/"
+    // istiyor ve 404 alınca konteyner unhealthy sayılıp deploy geri alınıyor. Yol
+    // Coolify'da ayarlanabilir ama repo dışında kalır; burada karşılamak dağıtımı
+    // görünmeyen bir ayara bağımlı olmaktan çıkarıyor.
+    if (url.pathname === "/health" || url.pathname === "/") {
       return new Response("OK", { headers: corsHeaders });
     }
 
